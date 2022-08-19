@@ -13,6 +13,8 @@
     - ```roscore```
 - Ver lista de tópicos ativos
     - ```rostopic list```
+- Ver tipo de mensagem de um tópico
+    - ```rostopic type [tópico]```
 - Ver output de um tópico
     - ```rostopic echo [tópico]```
 - Rodar programas
