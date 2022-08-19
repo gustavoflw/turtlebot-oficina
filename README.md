@@ -5,6 +5,8 @@
     - Programas para o Arduino
 - launch
     - Arquivos de launch do ROS
+- simulation
+    - Arquivos da simulação (modelos, etc.)
 - src/scripts
     - Executáveis para o ROS em Python
 
