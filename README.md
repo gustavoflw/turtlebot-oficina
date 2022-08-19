@@ -5,9 +5,24 @@
     - Programas para o Arduino
 - launch
     - Arquivos de launch do ROS
-    - Para rodar:
-        - ```roslaunch turtlebot_oficina [nome do arquivo.launch]```
 - src/scripts
     - Executáveis para o ROS em Python
-    - Para rodar: 
-        - ```rosrun turtlebot_oficina [nome do executável]```
+
+## Tutoriais
+- Iniciar o ROS master
+    - ```roscore```
+- Ver lista de tópicos ativos
+    - ```rostopic list```
+- Ver output de um tópico
+    - ```rostopic echo [tópico]```
+- Rodar programas
+    - Simulador
+        - ```roslaunch turtlebot_oficina simulator.launch```
+    - Teleoperação
+        - Requer pacote teleop_twist_keyboard (http://wiki.ros.org/teleop_twist_keyboard)
+        - ```roslaunch turtlebot_oficina teleop.launch```
+    - Serial
+        - Requer pacote rosserial_server (http://wiki.ros.org/rosserial_server)
+        - ```roslaunch turtlebot_oficina serial.launch```
+    - Visualizador do kinect
+        - ```roslaunch turtlebot_oficina kinect_visualizer.launch```
