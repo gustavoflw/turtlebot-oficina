@@ -6,8 +6,8 @@
 - launch
     - Arquivos de launch do ROS
     - Para rodar:
-        - ```rosrun [nome do pacote] [nome do executável]```
+        - ```roslaunch turtlebot_oficina [nome do arquivo.launch]```
 - src/scripts
     - Executáveis para o ROS em Python
     - Para rodar: 
-        - ```rosrun [nome do pacote] [nome do executável]```
+        - ```rosrun turtlebot_oficina [nome do executável]```

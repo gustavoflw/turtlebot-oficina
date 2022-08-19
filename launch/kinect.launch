@@ -1,0 +1,19 @@
+<!-- PARA USAR O KINECT -->
+
+<launch>
+    
+    <node 
+        pkg="tf" 
+        type="static_transform_publisher" 
+        name="test_broadcaster" 
+        args="0 0 0 0 0 0 0 odom camera_link 100" 
+    />
+
+    <node 
+        type="rviz"
+        name="rviz" 
+        pkg="rviz" 
+        args="-d $(find turtlebot_oficina)/simulation/rviz.rviz" 
+    />
+    
+</launch>

@@ -1,0 +1,8 @@
+<!-- Estabelece comunicação serial -->
+
+<launch>
+    <node pkg="rosserial_server" type="serial_node" name="rosserial_server">
+        <param name="port" value="/dev/ttyUSB0"/>
+        <param name="baud" value="9600"/>
+    </node>
+</launch>
