@@ -24,7 +24,7 @@
     - Rodar programas
         - Simulador (acho que não vai rodar no Windows)
             - ```roslaunch turtlebot_oficina simulator.launch```
-        - Teleoperação
+        - Teleoperação (controlar o robô pelo teclado)
             - Requer pacote teleop_twist_keyboard (http://wiki.ros.org/teleop_twist_keyboard)
             - ```roslaunch turtlebot_oficina teleop.launch```
         - Serial
@@ -32,6 +32,8 @@
             - ```roslaunch turtlebot_oficina serial.launch```
         - Visualizador do kinect
             - ```roslaunch turtlebot_oficina kinect_visualizer.launch```
+        - Driver de kinect
+            - PENDENTE (falta kinect real)
 - Programas exemplo
     - Publisher:
         - Arquivo em src/scripts/example_publisher.py
