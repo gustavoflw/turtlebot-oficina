@@ -37,8 +37,8 @@
 - Programas exemplo
     - Publisher:
         - Arquivo em src/scripts/example_publisher.py
-        - ```rosrun turtlebot_oficina example_publisher.py```
+        - ```rosrun turtlebot_oficina src/example_publisher.py```
     - Subscriber:
         - Arquivo em src/scripts/example_subscriber.py
-        - ```rosrun turtlebot_oficina example_subscriber.py```
+        - ```rosrun turtlebot_oficina src/example_subscriber.py```
     
