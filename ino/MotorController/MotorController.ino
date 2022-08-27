@@ -21,7 +21,8 @@ AF_DCMotor leftMotor  (pinMotorL);
 AF_DCMotor rightMotor (pinMotorR);
 
 // Nodo ROS
-ros::NodeHandle_<ArduinoHardware, 2, 5, 80, 200> nh;
+ros::NodeHandle nh;
+//ros::NodeHandle_<ArduinoHardware, 2, 5, 80, 200> nh;
 
 // Velocidades
 float v_x             = 0.0; // v. linear do robô
