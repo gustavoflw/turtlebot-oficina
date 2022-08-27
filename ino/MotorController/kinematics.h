@@ -1,11 +1,10 @@
 #ifndef KINEMATICS_H
 #define KINEMATICS_H
 
-
 // --------- CINEMATICA INVERSA (usado para ativar os motores) --------------------------------
 float getLeftWheelRPM(float robotLinearSpeed, float robotAngularSpeed, const float wheelRadius, const float wheelsAxisLength)
 {
-  
+  // [PENDENTE]
 }
 
 float getRightWheelRPM(float robotLinearSpeed, float robotAngularSpeed, const float wheelRadius, const float wheelsAxisLength)
@@ -24,14 +23,14 @@ float getRightWheelRPM(float robotLinearSpeed, float robotAngularSpeed, const fl
 // --------------------------------------------------------------------------------------------
 
 // --------- CINEMATICA DIRETA (usado pra estimar a velocidade do robô) -----------------------
-float getLinearSpeed(float leftWheelSpeed, float rightWheelSpeed, const float wheelRadius, const float wheelsAxisLength)
+float getLinearSpeed(float leftWheelRPM, float rightWheelRPM, const float wheelRadius, const float wheelsAxisLength)
 {
-  
+  // [PENDENTE]
 }
 
-float getAngularSpeed(float leftWheelSpeed, float rightWheelSpeed, const float wheelRadius, const float wheelsAxisLength)
+float getAngularSpeed(float leftWheelRPM, float rightWheelRPM, const float wheelRadius, const float wheelsAxisLength)
 {
-  
+  // [PENDENTE]
 }
 // --------------------------------------------------------------------------------------------
 

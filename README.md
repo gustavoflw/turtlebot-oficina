@@ -41,4 +41,3 @@
     - Subscriber:
         - Arquivo em src/scripts/example_subscriber.py
         - ```rosrun turtlebot_oficina src/example_subscriber.py```
-    

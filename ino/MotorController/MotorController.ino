@@ -90,17 +90,18 @@ void loop()
   pub_time.publish(&msg_time);
 
   // TESTES - APAGAR DEPOIS
-  v_x = 5.0;
-  w_z = 0.0;
+  v_x     = 5.0;
+  w_z     = 0.0;
+  newMsg  = true;
 
-  // Se tem nova mensagem do cmd_vel, calcula valores de RPM desejados
+  // Se tem nova mensagem de velocidade, calcula valores de RPM desejados
   if (newMsg == true) {
     newMsg = false;
     targetLeftRPM     = getLeftWheelRPM (v_x, w_z, wheelRadius, wheelsAxisLength);
     targetRightRPM    = getRightWheelRPM(v_x, w_z, wheelRadius, wheelsAxisLength);
   }
 
-  // Lê os encoders
+  // Lê os encoders [PENDENTE]
   msg_encoderLeftRPM.data   = 0.0;
   msg_encoderRightRPM.data  = 0.0;
 
