@@ -11,8 +11,8 @@
     - Executáveis para o ROS em Python
 
 ## Bibliotecas usadas no Arduino (instalar pela Arduino IDE)
-    - Adafruit motor shield library (não é o v2!)
-    - Rosserial (0.7.9)
+- Adafruit motor shield library (não é o v2!)
+- Rosserial (0.7.9)
 
 ## Tutoriais
 - Depois de instalar o ROS, colar a pasta do repositório no seu workspace/src
