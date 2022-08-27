@@ -1,4 +1,4 @@
-#include <ros.h>              // Rosserial
+#include <ros.h>              // Rosserial (usar 0.7.9)
 #include <std_msgs/Int32.h>   // Mensagem do ROS pra int
 #include <std_msgs/Float32.h> // Mensagem do ROS pra float
 

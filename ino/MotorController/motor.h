@@ -1,7 +1,7 @@
 #ifndef MOTOR_H
 #define MOTOR_H
 
-#include <AFMotor.h> // Adafruit Motor shield library (af_motor)
+#include <AFMotor.h> // Adafruit Motor shield library (af_motor) (NAO É O V2!)
 
 /* Ativa o motor
     - wheelSpeed tem que estar entre [-255, 255]
