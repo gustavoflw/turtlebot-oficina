@@ -7,8 +7,8 @@
     - Arquivos de launch do ROS
 - simulation
     - Arquivos da simulação (modelos, etc.)
-- src/scripts
-    - Executáveis para o ROS em Python
+- src
+    - Programas para o ROS para rodar no PC/Raspberry
 
 ## Bibliotecas usadas no Arduino (instalar pela Arduino IDE)
 - Adafruit motor shield library (não é o v2!)
