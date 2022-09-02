@@ -13,28 +13,54 @@
 #define maxRPM            200   // RPM máximo em 6V
 #define wheelRadius       4.0   // Raio das rodas
 #define wheelsAxisLength  10.0  // Comprimento do eixo das rodas
-#define pinMotorL         1     // Pino da ponte H
-#define pinMotorR         2     // Pino da ponte H
+#define pinMotorL         1     // Pino da ponte H (não é pino analógico do arduino)
+#define pinMotorR         2     // Pino da ponte H (não é pino analógico do arduino)
+#define pinEncoderL       3     // Pino do encoder
+#define pinEncoderR       2     // Pino do enconder
+#define buracosEncoder    20    // Quantidade de buracos do encoder
+
+//// Encoder
+volatile int contL=0;
+volatile int contR=0;
+
+void IntL()
+{
+  contL++;
+}
+
+void IntR()
+{
+  contR++;
+}
 
 // Motor
 AF_DCMotor leftMotor  (pinMotorL);
 AF_DCMotor rightMotor (pinMotorR);
 
 // Nodo ROS
-ros::NodeHandle nh;
+ros::NodeHandle nh; // Come mta memória!!!
 //ros::NodeHandle_<ArduinoHardware, 2, 5, 80, 200> nh;
 
 // Velocidades
-float v_x             = 0.0; // v. linear do robô
-float w_z             = 0.0; // v. angular do robô
-float targetLeftRPM   = 0.0; // RPM desejado (esquerda)
-float targetRightRPM  = 0.0; // RPM desejado (direita)
+float v_x             = 0.0;  // v. linear do robô
+float w_z             = 0.0;  // v. angular do robô
+float targetLeftRPM   = 0.0;  // RPM desejado (esquerda)
+float targetRightRPM  = 0.0;  // RPM desejado (direita)
+
+// Posicao, orientacao
+float x               = 0.0;  // Posicao em x
+float y               = 0.0;  // Posicao em y
+float theta           = 0.0;  // Angulo em torno de z
+
+// Tempo
+unsigned long t_now   = millis();
+unsigned long t_last  = t_now;
+unsigned long d_t     = t_now - t_last;
 
 // Pra saber se recebeu uma nova msg
 bool newMsg = false;
 
 // Funções de callback (são chamadas pelo ROS quando um subscriber tem mensagem nova)
-
 void callback_v_x(const std_msgs::Float32& msg)
 {
   newMsg = true;
@@ -76,13 +102,24 @@ void setup()
   nh.advertise(pub_encoderLeftRPM);
   nh.advertise(pub_encoderRightRPM);
 
-  // Cadastra os subscribers no nodo/
+  // Cadastra os subscribers no nodo
   nh.subscribe(sub_v_x);
   nh.subscribe(sub_w_z);
+
+  // Encoders
+  pinMode(pinEncoderL, INPUT);
+  pinMode(pinEncoderR, INPUT);
+  attachInterrupt(digitalPinToInterrupt(pinEncoderL), IntL, RISING);
+  attachInterrupt(digitalPinToInterrupt(pinEncoderR), IntR, RISING);
 }
 
 void loop()
 {
+  // Atualiza variáveis de tempo
+  t_last  = t_now;
+  t_now   = millis();
+  d_t     = t_now - t_last;
+  
   delay(delayTime);
   nh.spinOnce();  // "F5"
 
@@ -102,9 +139,15 @@ void loop()
     targetRightRPM    = getRightWheelRPM(v_x, w_z, wheelRadius, wheelsAxisLength);
   }
 
-  // Lê os encoders [PENDENTE]
-  msg_encoderLeftRPM.data   = 0.0;
-  msg_encoderRightRPM.data  = 0.0;
+  // Lê os encoders
+  detachInterrupt(digitalPinToInterrupt(pinEncoderL));
+  detachInterrupt(digitalPinToInterrupt(pinEncoderR));
+  msg_encoderLeftRPM.data   = contL*60/buracosEncoder;
+  msg_encoderRightRPM.data  = contR*60/buracosEncoder;
+  contL                     = 0;
+  contR                     = 0;
+  attachInterrupt(digitalPinToInterrupt(pinEncoderL), IntL, RISING);
+  attachInterrupt(digitalPinToInterrupt(pinEncoderR), IntR, RISING);
 
   // Calcula erro de RPM (velocidade desejada - velocidade lida)
   float errorLeftRPM  = targetLeftRPM   - msg_encoderLeftRPM.data;
@@ -129,6 +172,9 @@ void loop()
   // Cinemática direta: calcula v. linear e angular a partir dos RPM lido pelos encoders
   msg_odom_v_x.data = getLinearSpeed  (msg_encoderLeftRPM.data, msg_encoderRightRPM.data, wheelRadius, wheelsAxisLength);
   msg_odom_w_z.data = getAngularSpeed (msg_encoderLeftRPM.data, msg_encoderRightRPM.data, wheelRadius, wheelsAxisLength);
+
+  // Atualiza odometria
+  updateOdometry(v_x, w_z, d_t, &x, &y, &theta);
 
   // Publica mensagens
   pub_encoderLeftRPM.publish  (&msg_encoderLeftRPM);

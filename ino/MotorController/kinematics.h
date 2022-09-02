@@ -34,4 +34,20 @@ float getAngularSpeed(float leftWheelRPM, float rightWheelRPM, const float wheel
 }
 // --------------------------------------------------------------------------------------------
 
+// --------- ODOMETRIA ------------------------------------------------------------------------
+void updateOdometry(float v_x, float w_z, unsigned long d_t, float* x, float* y, float* theta)
+{
+  // Calcula o quanto girou:
+  float d_theta = w_z * d_t;
+  
+  // Calcula o quanto andou:
+  float d_x = sqrt(v_x * v_x)*cos(d_theta) * d_t;
+  float d_y = sqrt(v_x * v_x)*sin(d_theta) * d_t;
+
+  // Integrando, calcula o novo valor (soma do antigo mais a nova variação)
+  *x = *x + d_x;
+  *y = *y + d_y;
+  *theta = *theta + d_theta;
+}
+
 #endif
