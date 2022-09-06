@@ -19,7 +19,7 @@
 #define pinEncoderR       2     // Pino do enconder
 #define buracosEncoder    20    // Quantidade de buracos do encoder
 
-//// Encoder
+// Encoder
 volatile int contL=0;
 volatile int contR=0;
 
@@ -79,11 +79,11 @@ std_msgs::Float32   msg_odom_v_x;
 std_msgs::Float32   msg_odom_w_z;
 std_msgs::Float32   msg_encoderLeftRPM;
 std_msgs::Float32   msg_encoderRightRPM;
-ros::Publisher      pub_time            ("/motor/time",         &msg_time);
-ros::Publisher      pub_odom_v_x        ("/odom_v_x",           &msg_odom_v_x);
-ros::Publisher      pub_odom_w_z        ("/odom_w_z",           &msg_odom_w_z);
-ros::Publisher      pub_encoderLeftRPM  ("/encoder_left_rpm",   &msg_encoderLeftRPM);
-ros::Publisher      pub_encoderRightRPM ("/encoder_right_rpm",  &msg_encoderRightRPM);
+ros::Publisher      pub_time            ("/mc/time",                      &msg_time);
+ros::Publisher      pub_odom_v_x        ("/mc/odom/v/x",                  &msg_odom_v_x);
+ros::Publisher      pub_odom_w_z        ("/mc/odom/w/z",                  &msg_odom_w_z);
+ros::Publisher      pub_encoderLeftRPM  ("/mc/motor/left/encoder/rpm",    &msg_encoderLeftRPM);
+ros::Publisher      pub_encoderRightRPM ("/mc/motor/right/encoder/rpm",   &msg_encoderRightRPM);
 
 // Subscribers
 ros::Subscriber<std_msgs::Float32> sub_v_x("/cmd_vel/linear/x",   &callback_v_x);
@@ -119,13 +119,11 @@ void loop()
   t_last  = t_now;
   t_now   = millis();
   d_t     = t_now - t_last;
+  msg_time.data = t_now;
+  pub_time.publish(&msg_time);
   
   delay(delayTime);
-  nh.spinOnce();  // "F5"
-
-  // Pega o tempo de execucao do arduino e publica
-  msg_time.data = millis();
-  pub_time.publish(&msg_time);
+  nh.spinOnce();  // "F5"  
 
   // TESTES - APAGAR DEPOIS
   v_x     = 5.0;
