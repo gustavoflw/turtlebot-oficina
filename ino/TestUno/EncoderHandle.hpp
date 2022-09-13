@@ -51,7 +51,7 @@ class EncoderHandle {
       // Rapido
       t_update_interval = 50;
 
-      // Lento
+      // // Lento
       // if (rpm <= 20)
       //   t_update_interval = 100;        
       // else if (rpm <= 120)

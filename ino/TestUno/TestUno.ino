@@ -41,11 +41,11 @@ void setup() {
 
   motorL.motor.run(FORWARD);
   motorL.motor.setSpeed(0);
-  motorL.SetTargetRPM(30);
+  motorL.SetTargetRPM(60);
 
   motorR.motor.run(FORWARD);
   motorR.motor.setSpeed(0);
-  motorR.SetTargetRPM(200);
+  motorR.SetTargetRPM(60);
 
   delay(25);
   
@@ -57,14 +57,22 @@ void loop() {
   delay(30);
 
   // Lento
-  // if (encoderL.Update() == true) {
-  //   motorL.UpdatePID(encoderL.GetRPM(), kp, ki, kd);
-  //   // motorL.UpdateSpeed();
-  // }
+  if (encoderL.Update() == true) {
+    
+  }
+  motorL.UpdatePID(encoderL.GetRPM(), kp, ki, kd);
+  motorL.UpdateSpeed();
+
+  // Lento
+  if (encoderR.Update() == true) {
+    
+  }
+  motorR.UpdatePID(encoderR.GetRPM(), kp, ki, kd);
+  motorR.UpdateSpeed();
 
   // Rápido
-  encoderL.Update();
-  motorL.UpdatePID(encoderL.GetRPM(), kp, ki, kd);
+  // encoderL.Update();
+  // motorL.UpdatePID(encoderL.GetRPM(), kp, ki, kd);
   // motorL.UpdateSpeed();
 
   // encoderR.Update();

@@ -66,7 +66,7 @@ class MotorController {
         speed_now = speed_now + fspeed_correction;
 
         speed_now = min(speed_now, 255);
-        speed_now = max(speed_now, 60);
+        speed_now = max(speed_now, 120);
       }
     
       Log();

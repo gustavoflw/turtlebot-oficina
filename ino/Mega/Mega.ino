@@ -1,6 +1,11 @@
 #include <ros.h>                  // Rosserial (usar 0.7.9)
 #include <std_msgs/Int32.h>       // Msg do ROS para int
-#include <nav_msgs/Odometry.h>    // http://docs.ros.org/en/noetic/api/nav_msgs/html/msg/Odometry.html
+
+#include <std_msgs/Float64.h>
+
+#include <geometry_msgs/Twist.h>
+#include <geometry_msgs/Pose.h>
+
 #include "Encoder.hpp"
 #include "MotorController.hpp"
 #include "Kinematics.hpp"
@@ -15,8 +20,8 @@
 #define pin_data_encoder_R  19
 #define t_delay             100
 #define serialRate          9600
-#define wheelRadius         4.0
-#define wheelsAxisLength    10.0 
+#define wheelRadius         3.3
+#define wheelsAxisLength    15.6 
 #define kp                  0.3
 #define ki                  0.0
 #define kd                  0.0
@@ -42,8 +47,10 @@ std_msgs::Int32 msg_time;
 // Cinemática
 Kinematics            kinematics;
 Odometry              odometry;
+std_msgs::Float64     msg_odom_theta;
 geometry_msgs::Twist  msg_cmd_vel;
-nav_msgs::Odometry    msg_odom;
+geometry_msgs::Twist  msg_odom_twist;
+geometry_msgs::Pose   msg_odom_pose;
 
 // Nodo ROS
 ros::NodeHandle nh; // Consome mta memória se tem mtos publishers e subscribers
@@ -60,7 +67,9 @@ void callback_cmd_vel(const geometry_msgs::Twist& msg)
 
 // Publishers
 ros::Publisher pub_time("/mc/time", &msg_time);
-// ros::Publisher pub_odom("/odom", &msg_odom);
+ros::Publisher pub_odom_theta("/odom/theta", &msg_odom_theta);
+ros::Publisher pub_odom_twist("/odom/twist", &msg_odom_twist);
+ros::Publisher pub_odom_pose("/odom/pose", &msg_odom_pose);
 
 // Subscribers
 ros::Subscriber <geometry_msgs::Twist> sub_cmd_vel("/cmd_vel", &callback_cmd_vel);
@@ -70,11 +79,13 @@ void setup()
   // Inicia o rosserial - conflita com o serial normal!
   nh.getHardware()->setBaud(serialRate);
   nh.initNode();
-  Serial.begin(serialRate);
+  // Serial.begin(serialRate);
 
   // Cadastra os publishers e subscribers
+  nh.advertise(pub_odom_theta);
+  nh.advertise(pub_odom_twist);
+  nh.advertise(pub_odom_pose);
   nh.advertise(pub_time);
-  // nh.advertise(pub_odom);
   nh.subscribe(sub_cmd_vel);
 
   // Setup dos encoders
@@ -95,12 +106,17 @@ void loop()
 
   UpdateTimeVariables();
 
-  motor_L.SetTargetRPM(kinematics.Inverse_L(msg_cmd_vel.linear.x, msg_cmd_vel.angular.z, wheelRadius, wheelsAxisLength));  
+  motor_L.SetTargetRPM(kinematics.Inverse_L(msg_cmd_vel.linear.x, msg_cmd_vel.angular.z, wheelRadius, wheelsAxisLength));
   encoder_L.Update();
   motor_L.UpdatePID(encoder_L.GetRPM(), kp, ki, kd);
   motor_L.UpdateSpeed();
 
-  // UpdateOdom();
+  motor_R.SetTargetRPM(kinematics.Inverse_R(msg_cmd_vel.linear.x, msg_cmd_vel.angular.z, wheelRadius, wheelsAxisLength));
+  encoder_R.Update();
+  motor_R.UpdatePID(encoder_R.GetRPM(), kp, ki, kd);
+  motor_R.UpdateSpeed();
+
+  UpdateOdom();
 }
 
 // Atualiza variáveis de tempo
@@ -136,14 +152,18 @@ void UpdateTargetRPM()
 //   }
 // }
 
-// // Atualiza odometria (cinemática direta)
-// void UpdateOdom()
-// {
-//   msg_odom.twist.twist.linear.x   = kinematics.Direct_linear(encoder_L.GetRPM(), encoder_R.GetRPM(), wheelRadius, wheelsAxisLength);
-//   msg_odom.twist.twist.angular.z  = kinematics.Direct_angular(encoder_L.GetRPM(), encoder_R.GetRPM(), wheelRadius, wheelsAxisLength);
-//   odometry.UpdateOdom(msg_odom.twist.twist.linear.x, msg_odom.twist.twist.angular.z);
-//   msg_odom.pose.pose.position.x = odometry.x;
-//   msg_odom.pose.pose.position.y = odometry.y;
-//   msg_odom.pose.pose.orientation = odometry.RpyToQuaternion(odometry.theta, 0, 0);
-//   // pub_odom.publish(&msg_odom);
-// }
+// Atualiza odometria (cinemática direta)
+void UpdateOdom()
+{
+  msg_odom_twist.linear.x = kinematics.Direct_linear(encoder_L.GetRPM(), encoder_R.GetRPM(), wheelRadius, wheelsAxisLength);
+  msg_odom_twist.angular.z  = kinematics.Direct_angular(encoder_L.GetRPM(), encoder_R.GetRPM(), wheelRadius, wheelsAxisLength);
+  odometry.UpdateOdom(msg_odom_twist.linear.x, msg_odom_twist.angular.z);
+  // msg_odom_pose.position.x = odometry.x;
+  // msg_odom_pose.position.y = odometry.y;
+  // msg_odom_pose.orientation = odometry.RpyToQuaternion(odometry.theta, 0, 0);
+  msg_odom_theta.data = odometry.theta;
+
+  pub_odom_theta.publish(&msg_odom_theta);
+  pub_odom_twist.publish(&msg_odom_twist);
+  pub_odom_pose.publish(&msg_odom_pose);
+}

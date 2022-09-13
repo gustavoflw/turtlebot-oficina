@@ -14,7 +14,7 @@ class Encoder {
 
   // Variáveis usadas para atualizar velocidade do motor (milissegundos)
   unsigned long t_update_last     = 0;
-  unsigned long t_update_interval = 100;
+  unsigned long t_update_interval = 50;
   double rpm = 0.0;
  
   public:

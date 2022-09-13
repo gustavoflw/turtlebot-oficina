@@ -15,10 +15,10 @@ class Odometry {
     {
       // Atualiza tempo
       unsigned long t_now = millis();
-      unsigned long d_t = t - t_now;
+      unsigned long d_t = t_now - t;
       t = t_now;
 
-      // Coloca v_x e w_z em m/ms e rad/ms (porque d_t está em ms)
+      // Coloca v_x e w_z em [u]/ms e rad/ms (porque d_t está em ms)
       v_x = v_x / 1000.0;
       w_z = w_z / 1000.0;
 
@@ -33,9 +33,6 @@ class Odometry {
       x      += d_x;
       y      += d_y;
       theta  += d_theta;
-
-      // Converte o angulo para quaternio
-      // msg.pose.pose.orientation = tf::createQuaternionMsgFromYaw(theta);
     }
 
     // Converte 3 angulos de rotação para quatérnio (fonte: Wikipedia)
