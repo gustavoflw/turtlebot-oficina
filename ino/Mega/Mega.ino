@@ -158,9 +158,9 @@ void UpdateOdom()
   msg_odom_twist.linear.x = kinematics.Direct_linear(encoder_L.GetRPM(), encoder_R.GetRPM(), wheelRadius, wheelsAxisLength);
   msg_odom_twist.angular.z  = kinematics.Direct_angular(encoder_L.GetRPM(), encoder_R.GetRPM(), wheelRadius, wheelsAxisLength);
   odometry.UpdateOdom(msg_odom_twist.linear.x, msg_odom_twist.angular.z);
-  // msg_odom_pose.position.x = odometry.x;
-  // msg_odom_pose.position.y = odometry.y;
-  // msg_odom_pose.orientation = odometry.RpyToQuaternion(odometry.theta, 0, 0);
+  msg_odom_pose.position.x = odometry.x;
+  msg_odom_pose.position.y = odometry.y;
+  msg_odom_pose.orientation = odometry.RpyToQuaternion(odometry.theta, 0, 0);
   msg_odom_theta.data = odometry.theta;
 
   pub_odom_theta.publish(&msg_odom_theta);

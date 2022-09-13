@@ -1,5 +1,16 @@
 # Turtlebot para Oficina de Integração
 
+## Checklist
+- ~~Controle proporcional motores~~
+- ~~Odometria~~
+- ~~Cinemática direta~~
+- ~~Cinemática inversa~~
+- ~~Config. básica Kinect~~
+- ~~Pacote de conversão da mensagem de odometria~~
+- Movimento omni direcional
+- Rede do Raspberry
+- Aplicativo
+
 ## Pastas
 - ino
     - Programas para o Arduino

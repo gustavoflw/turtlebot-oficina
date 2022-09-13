@@ -207,3 +207,7 @@ include_directories(
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
+
+
+add_executable(odom_converter src/odom_converter.cpp)
+target_link_libraries(odom_converter ${catkin_LIBRARIES})
