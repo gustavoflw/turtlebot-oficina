@@ -29,6 +29,7 @@ class MotorController {
   AF_DCMotor motor;
   
   public:
+    int status = FORWARD;
     // Inicialização
     MotorController(int pin) : motor(pin) 
     {
@@ -38,7 +39,7 @@ class MotorController {
     // Setup
     void Setup()
     {
-      motor.run(FORWARD);
+      motor.run(status);
       motor.setSpeed(0);
       SetTargetRPM(0);
     }
@@ -84,7 +85,17 @@ class MotorController {
     // Define o RPM alvo
     void SetTargetRPM(float target) 
     {
-      rpm_target = target;
+      unsigned long t_delay = 100;
+      rpm_target = fabs(target);
+
+      if (target < 0) {
+        status = BACKWARD;
+        motor.run(status);
+      }
+      else if (target > 0) {
+        status = FORWARD;
+        motor.run(status);
+      }
     }
 
     // Printa log

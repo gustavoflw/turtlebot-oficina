@@ -7,9 +7,11 @@
 - ~~Cinemática inversa~~
 - ~~Config. básica Kinect~~
 - ~~Pacote de conversão da mensagem de odometria~~
-- Movimento omni direcional
-- Rede do Raspberry
-- Aplicativo
+- ~~Movimento omni direcional~~
+- Raspberry + Rede + Aplicativo
+- Arrumar teleop
+- Rosserial server
+- Montar segundo andar
 
 ## Pastas
 - ino

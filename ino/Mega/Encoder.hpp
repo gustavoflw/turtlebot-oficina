@@ -1,6 +1,8 @@
 #ifndef ENCODER_HPP
 #define ENCODER_HPP
 
+#include <AFMotor.h>
+
 /* Classe para encoder óptico */
 class Encoder {
   // Constante
@@ -60,16 +62,20 @@ class Encoder {
     }
 
     // Atualiza o RPM do motor, resetando o contador
-    boolean Update()
+    boolean Update(int rotation)
     {
-      if (rpm <= 20)
-        t_update_interval = 100;        
-      else if (rpm <= 120)
-        t_update_interval = 500;
-      else if (rpm <= 220)
-        t_update_interval = 250;
-      else
-        t_update_interval = 250;
+      // int multiplier = 1;
+      // if (rotation == BACKWARD)
+        // multiplier = -1;
+
+      // if (rpm <= 20)
+      //   t_update_interval = 100;        
+      // else if (rpm <= 120)
+      //   t_update_interval = 500;
+      // else if (rpm <= 220)
+      //   t_update_interval = 250;
+      // else
+      //   t_update_interval = 250;
 
       unsigned long t_now = millis();
       unsigned long dt = t_now - t_update_last;
@@ -80,6 +86,7 @@ class Encoder {
         rpm = rpm / dt;       // Rotação por ms
         rpm = rpm * 1000;     // RPS
         rpm = rpm * 60;       // RPM
+        // rpm = multiplier * rpm;
         ResetCounter();
         // Log();
         return true;

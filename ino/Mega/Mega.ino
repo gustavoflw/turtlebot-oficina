@@ -107,12 +107,12 @@ void loop()
   UpdateTimeVariables();
 
   motor_L.SetTargetRPM(kinematics.Inverse_L(msg_cmd_vel.linear.x, msg_cmd_vel.angular.z, wheelRadius, wheelsAxisLength));
-  encoder_L.Update();
+  encoder_L.Update(motor_L.status);
   motor_L.UpdatePID(encoder_L.GetRPM(), kp, ki, kd);
   motor_L.UpdateSpeed();
 
   motor_R.SetTargetRPM(kinematics.Inverse_R(msg_cmd_vel.linear.x, msg_cmd_vel.angular.z, wheelRadius, wheelsAxisLength));
-  encoder_R.Update();
+  encoder_R.Update(motor_R.status);
   motor_R.UpdatePID(encoder_R.GetRPM(), kp, ki, kd);
   motor_R.UpdateSpeed();
 
