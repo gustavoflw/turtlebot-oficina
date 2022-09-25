@@ -52,7 +52,7 @@ class MotorController {
       t_last = t_now;
       
       rpm_last = rpm_now;
-      rpm_now = _rpm_now;
+      rpm_now = fabs(_rpm_now);
       rpm_error_last = rpm_error_now;
       rpm_error_now = rpm_target - rpm_now;
       
@@ -68,6 +68,7 @@ class MotorController {
 
         speed_now = min(speed_now, 255);
         speed_now = max(speed_now, 120);
+        // speed_now = max(speed_now, 0);
       }
     
       Log();

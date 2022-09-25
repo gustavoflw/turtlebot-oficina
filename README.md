@@ -8,10 +8,15 @@
 - ~~Config. básica Kinect~~
 - ~~Pacote de conversão da mensagem de odometria~~
 - ~~Movimento omni direcional~~
-- Raspberry + Rede + Aplicativo
-- Arrumar teleop
-- Rosserial server
-- Montar segundo andar
+- ~~Montar segundo andar~~
+- ~~Aplicativo~~
+- ~~Arrumar teleop (delay) ~~
+- ~~Rede~~
+- Raspberry
+- Kinect: Depth to laser (http://wiki.ros.org/depthimage_to_laserscan)
+- Kinect: odometria (http://wiki.ros.org/rf2o_laser_odometry)
+- Alimentação
+- Placa de alimentação
 
 ## Pastas
 - ino

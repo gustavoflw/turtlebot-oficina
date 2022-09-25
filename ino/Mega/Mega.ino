@@ -18,8 +18,8 @@
 #define pin_5V_encoder_R    28
 #define pin_data_encoder_L  20
 #define pin_data_encoder_R  19
-#define t_delay             100
-#define serialRate          9600
+#define t_delay             50
+#define serialRate          57600
 #define wheelRadius         3.3
 #define wheelsAxisLength    15.6 
 #define kp                  0.3
@@ -38,7 +38,7 @@ Encoder encoder_R;
 void IncrementCounter_encoder_L() { encoder_L.IncrementCounter(); }
 void IncrementCounter_encoder_R() { encoder_R.IncrementCounter(); }
 
-// // Variáveis de tempo
+// Variáveis de tempo
 unsigned long t_now   = millis();
 unsigned long t_last  = t_now;
 unsigned long dt      = 0;
@@ -47,6 +47,8 @@ std_msgs::Int32 msg_time;
 // Cinemática
 Kinematics            kinematics;
 Odometry              odometry;
+std_msgs::Float64     msg_rpmL;
+std_msgs::Float64     msg_rpmR;
 std_msgs::Float64     msg_odom_theta;
 geometry_msgs::Twist  msg_cmd_vel;
 geometry_msgs::Twist  msg_odom_twist;
@@ -63,10 +65,24 @@ void callback_cmd_vel(const geometry_msgs::Twist& msg)
 {
   new_cmd_vel = true;
   msg_cmd_vel = msg;
+
+  if (fabs(msg_cmd_vel.linear.x) < 0.1)
+    msg_cmd_vel.linear.x = 0.0; 
+  if (fabs(msg_cmd_vel.angular.z) < 0.1)
+    msg_cmd_vel.angular.z = 0.0;
+
+  if (msg_cmd_vel.linear.x == 0.0)
+    digitalWrite(53, LOW);
+  else
+    digitalWrite(53, HIGH);
 }
+
+
 
 // Publishers
 ros::Publisher pub_time("/mc/time", &msg_time);
+ros::Publisher pub_rpmL("/rpm/l", &msg_rpmL);
+ros::Publisher pub_rpmR("/rpm/r", &msg_rpmR);
 ros::Publisher pub_odom_theta("/odom/theta", &msg_odom_theta);
 ros::Publisher pub_odom_twist("/odom/twist", &msg_odom_twist);
 ros::Publisher pub_odom_pose("/odom/pose", &msg_odom_pose);
@@ -77,11 +93,17 @@ ros::Subscriber <geometry_msgs::Twist> sub_cmd_vel("/cmd_vel", &callback_cmd_vel
 void setup()
 {
   // Inicia o rosserial - conflita com o serial normal!
-  nh.getHardware()->setBaud(serialRate);
+  // nh.getHardware()->setBaud(serialRate);
   nh.initNode();
   // Serial.begin(serialRate);
 
+  // TESTES (apagar dps)
+  pinMode(53, OUTPUT);
+  digitalWrite(53, LOW);
+
   // Cadastra os publishers e subscribers
+  nh.advertise(pub_rpmL);
+  nh.advertise(pub_rpmR);
   nh.advertise(pub_odom_theta);
   nh.advertise(pub_odom_twist);
   nh.advertise(pub_odom_pose);
@@ -94,29 +116,34 @@ void setup()
   encoder_L.Setup(pin_5V_encoder_L, pin_data_encoder_L);
   encoder_R.Setup(pin_5V_encoder_R, pin_data_encoder_R);
 
-  // // Setup dos motores
+  // Setup dos motores
   motor_L.Setup();
   motor_R.Setup();
 }
 
 void loop()
 {
-  delay(t_delay);
-  nh.spinOnce(); // "F5"
+  delay(1000); nh.spinOnce();
+  // if (IsAllowedToLoop(t_last, t_delay)) {
+  //   UpdateTimeVariables();
 
-  UpdateTimeVariables();
+  //   nh.spinOnce(); // "F5"    
 
-  motor_L.SetTargetRPM(kinematics.Inverse_L(msg_cmd_vel.linear.x, msg_cmd_vel.angular.z, wheelRadius, wheelsAxisLength));
-  encoder_L.Update(motor_L.status);
-  motor_L.UpdatePID(encoder_L.GetRPM(), kp, ki, kd);
-  motor_L.UpdateSpeed();
+  //   UpdateMotors();
 
-  motor_R.SetTargetRPM(kinematics.Inverse_R(msg_cmd_vel.linear.x, msg_cmd_vel.angular.z, wheelRadius, wheelsAxisLength));
-  encoder_R.Update(motor_R.status);
-  motor_R.UpdatePID(encoder_R.GetRPM(), kp, ki, kd);
-  motor_R.UpdateSpeed();
+  //   UpdateOdom();
+  // }
+}
 
-  UpdateOdom();
+// Retorna true se o dt atual for maior que um certo valor
+bool IsAllowedToLoop(unsigned long millis_lastLoop, unsigned long dt_min)
+{
+  unsigned long millis_now = millis();
+  unsigned long dt = millis_now - millis_lastLoop;
+  if (dt > dt_min)
+    return true;
+  else
+    return false;
 }
 
 // Atualiza variáveis de tempo
@@ -139,18 +166,23 @@ void UpdateTargetRPM()
   }
 }
 
-// // Se o encoder tem uma nova leitura, atualiza a velocidade do motor
-// void UpdateMotors()
-// {
-//   if (encoder_L.Update() == true) {
-//     motor_L.UpdatePID(encoder_L.GetRPM(), kp, ki, kd);
-//     motor_L.UpdateSpeed();
-//   }
-//   if (encoder_R.Update() == true) {
-//     motor_R.UpdatePID(encoder_R.GetRPM(), kp, ki, kd);
-//     motor_R.UpdateSpeed();
-//   }
-// }
+// Se o encoder tem uma nova leitura, atualiza a velocidade do motor
+void UpdateMotors()
+{
+  motor_L.SetTargetRPM(kinematics.Inverse_L(msg_cmd_vel.linear.x, msg_cmd_vel.angular.z, wheelRadius, wheelsAxisLength));
+  encoder_L.Update(motor_L.status);
+  motor_L.UpdatePID(encoder_L.GetRPM(), kp, ki, kd);
+  motor_L.UpdateSpeed();
+  msg_rpmL.data = encoder_L.GetRPM();
+  pub_rpmL.publish(&msg_rpmL);
+
+  motor_R.SetTargetRPM(kinematics.Inverse_R(msg_cmd_vel.linear.x, msg_cmd_vel.angular.z, wheelRadius, wheelsAxisLength));
+  encoder_R.Update(motor_R.status);
+  motor_R.UpdatePID(encoder_R.GetRPM(), kp, ki, kd);
+  motor_R.UpdateSpeed();
+  msg_rpmR.data = encoder_R.GetRPM();
+  pub_rpmR.publish(&msg_rpmR);
+}
 
 // Atualiza odometria (cinemática direta)
 void UpdateOdom()

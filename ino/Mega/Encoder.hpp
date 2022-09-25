@@ -64,16 +64,16 @@ class Encoder {
     // Atualiza o RPM do motor, resetando o contador
     boolean Update(int rotation)
     {
-      // int multiplier = 1;
-      // if (rotation == BACKWARD)
-        // multiplier = -1;
+      int multiplier = 1;
+      if (rotation == BACKWARD)
+        multiplier = -1;
 
       // if (rpm <= 20)
-      //   t_update_interval = 100;        
+      //   t_update_interval = 25;        
       // else if (rpm <= 120)
-      //   t_update_interval = 500;
+      //   t_update_interval = 75;
       // else if (rpm <= 220)
-      //   t_update_interval = 250;
+      //   t_update_interval = 150;
       // else
       //   t_update_interval = 250;
 
@@ -86,7 +86,7 @@ class Encoder {
         rpm = rpm / dt;       // Rotação por ms
         rpm = rpm * 1000;     // RPS
         rpm = rpm * 60;       // RPM
-        // rpm = multiplier * rpm;
+        rpm = multiplier * rpm;
         ResetCounter();
         // Log();
         return true;
