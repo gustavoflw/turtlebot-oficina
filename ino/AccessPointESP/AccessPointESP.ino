@@ -8,7 +8,7 @@ uint8_t newMACAddress[] = {0x5C, 0xE8, 0x83, 0x36, 0x9A, 0xC3};
 
 void setup(void)
 {
-  WiFi.softAP(ssid, password);
+  WiFi.softAP(ssid, password, 8);
   wifi_set_macaddr(SOFTAP_IF, &newMACAddress[0]);
 
   pinMode(LED_BUILTIN, OUTPUT);
@@ -17,5 +17,5 @@ void setup(void)
 
 void loop(void)
 {
-  
+  delay(10); 
 }

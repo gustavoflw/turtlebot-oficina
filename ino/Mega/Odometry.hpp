@@ -26,8 +26,25 @@ class Odometry {
       double d_theta = w_z * d_t;
       
       // Calcula o quanto andou:
-      double d_x = sqrt(v_x * v_x)*cos(d_theta) * d_t;
-      double d_y = sqrt(v_x * v_x)*sin(d_theta) * d_t;
+      double d_x = v_x * cos(d_theta) * d_t;
+      double d_y = v_x * sin(d_theta) * d_t;
+      
+      // if (v_x > 0 && w_z > 0) {
+      //   d_x = fabs(d_x);
+      //   d_y = -fabs(d_y);
+      // }
+      // else if (v_x > 0 && w_z < 0) {
+      //   d_x = fabs(d_x);
+      //   d_y = fabs(d_y);
+      // }
+      // else if (v_x < 0 && w_z < 0) {
+      //   d_x = -fabs(d_x);
+      //   d_y = fabs(d_y);
+      // }
+      // else if (v_x < 0 && w_z > 0) {
+      //   d_x = -fabs(d_x);
+      //   d_y = -fabs(d_y);
+      // }
 
       // Calcula os novos valores (soma do antigo mais a nova variação)
       x      += d_x;

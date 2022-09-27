@@ -13,6 +13,7 @@
 - ~~Arrumar teleop (delay) ~~
 - ~~Rede~~
 - Raspberry
+- Conversor de odometria
 - Kinect: Depth to laser (http://wiki.ros.org/depthimage_to_laserscan)
 - Kinect: odometria (http://wiki.ros.org/rf2o_laser_odometry)
 - Alimentação

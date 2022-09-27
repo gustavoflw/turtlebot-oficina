@@ -123,16 +123,18 @@ void setup()
 
 void loop()
 {
-  delay(1000); nh.spinOnce();
-  // if (IsAllowedToLoop(t_last, t_delay)) {
-  //   UpdateTimeVariables();
+  delay(5); 
+  nh.spinOnce();
+  
+  if (IsAllowedToLoop(t_last, t_delay)) {
+    UpdateTimeVariables();
 
-  //   nh.spinOnce(); // "F5"    
+    nh.spinOnce(); // "F5"    
 
-  //   UpdateMotors();
+    UpdateMotors();
 
-  //   UpdateOdom();
-  // }
+    UpdateOdom();
+  }
 }
 
 // Retorna true se o dt atual for maior que um certo valor
@@ -189,7 +191,7 @@ void UpdateOdom()
 {
   msg_odom_twist.linear.x = kinematics.Direct_linear(encoder_L.GetRPM(), encoder_R.GetRPM(), wheelRadius, wheelsAxisLength);
   msg_odom_twist.angular.z  = kinematics.Direct_angular(encoder_L.GetRPM(), encoder_R.GetRPM(), wheelRadius, wheelsAxisLength);
-  odometry.UpdateOdom(msg_odom_twist.linear.x, msg_odom_twist.angular.z);
+  odometry.UpdateOdom(msg_odom_twist.linear.x/100, msg_odom_twist.angular.z);
   msg_odom_pose.position.x = odometry.x;
   msg_odom_pose.position.y = odometry.y;
   msg_odom_pose.orientation = odometry.RpyToQuaternion(odometry.theta, 0, 0);
