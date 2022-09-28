@@ -63,12 +63,12 @@ void loop() {
   motorL.UpdatePID(encoderL.GetRPM(), kp, ki, kd);
   motorL.UpdateSpeed();
 
-  // Lento
-  if (encoderR.Update() == true) {
+  // // Lento
+  // if (encoderR.Update() == true) {
     
-  }
-  motorR.UpdatePID(encoderR.GetRPM(), kp, ki, kd);
-  motorR.UpdateSpeed();
+  // }
+  // motorR.UpdatePID(encoderR.GetRPM(), kp, ki, kd);
+  // motorR.UpdateSpeed();
 
   // Rápido
   // encoderL.Update();

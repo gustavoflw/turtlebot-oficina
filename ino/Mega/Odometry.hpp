@@ -23,33 +23,20 @@ class Odometry {
       w_z = w_z / 1000.0;
 
       // Calcula o quanto girou
-      double d_theta = w_z * d_t;
+      theta = w_z * d_t + theta;
+      // double d_theta = w_z * d_t + d_theta;
       
       // Calcula o quanto andou:
-      double d_x = v_x * cos(d_theta) * d_t;
-      double d_y = v_x * sin(d_theta) * d_t;
-      
-      // if (v_x > 0 && w_z > 0) {
-      //   d_x = fabs(d_x);
-      //   d_y = -fabs(d_y);
-      // }
-      // else if (v_x > 0 && w_z < 0) {
-      //   d_x = fabs(d_x);
-      //   d_y = fabs(d_y);
-      // }
-      // else if (v_x < 0 && w_z < 0) {
-      //   d_x = -fabs(d_x);
-      //   d_y = fabs(d_y);
-      // }
-      // else if (v_x < 0 && w_z > 0) {
-      //   d_x = -fabs(d_x);
-      //   d_y = -fabs(d_y);
-      // }
+      // double d_x = v_x * cos(d_theta) * d_t;
+      // double d_y = v_x * sin(d_theta) * d_t;
+
+      double d_x = v_x * cos(theta);
+      double d_y = v_x * sin(theta);
 
       // Calcula os novos valores (soma do antigo mais a nova variação)
       x      += d_x;
       y      += d_y;
-      theta  += d_theta;
+      // theta  += d_theta;
     }
 
     // Converte 3 angulos de rotação para quatérnio (fonte: Wikipedia)
