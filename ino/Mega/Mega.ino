@@ -70,11 +70,6 @@ void callback_cmd_vel(const geometry_msgs::Twist& msg)
     msg_cmd_vel.linear.x = 0.0; 
   if (fabs(msg_cmd_vel.angular.z) < 0.1)
     msg_cmd_vel.angular.z = 0.0;
-
-  if (msg_cmd_vel.linear.x == 0.0)
-    digitalWrite(53, LOW);
-  else
-    digitalWrite(53, HIGH);
 }
 
 

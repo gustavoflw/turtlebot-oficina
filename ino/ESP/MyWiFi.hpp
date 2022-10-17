@@ -1,10 +1,10 @@
-#ifndef WIFI_H
-#define WIFI_H
+#ifndef WIFI_HPP
+#define WIFI_HPP
 
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
 
-class MyWiFi {
+class MyWifi {
 
   public:
 

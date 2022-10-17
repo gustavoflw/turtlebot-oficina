@@ -212,3 +212,6 @@ include_directories(
 
 add_executable(odom_converter src/odom_converter.cpp)
 target_link_libraries(odom_converter ${catkin_LIBRARIES})
+
+add_executable(scan_converter src/scan_converter.cpp)
+target_link_libraries(scan_converter ${catkin_LIBRARIES})

@@ -3,7 +3,7 @@
 
 #include <SoftwareSerial.h>
 
-#define SERIALCOMBUFFER 1024
+#define SERIALCOMBUFFER 128
 
 class SerialCom {
   const byte numChars = SERIALCOMBUFFER;
@@ -46,56 +46,57 @@ class SerialCom {
       }
     }
 
-    /* Filtra os dados de "<CarInfo, %f, %f, %f, %f, %f ...>"
+    /* Filtra os dados de "<CarControl, %f, %f>"
       - Variáveis:  
-        - x, y, theta, 
-        - v_x, w_z, 
-        - orientation_x, orientation_y, orientation_z, orientation_w, 
-        - rpm_L, rpmR, 
-        - laserAngle, laserRange */
-    void ParseData(float* rpmL, float* rpmR, float* laserAngle, double* laserRange)
+        - v_x, w_z */
+    void ParseData(double* v_x, double* w_z)
     {
-      // char* strtokIndx;
+      char* strtokIndx;
 
-      // // Corta tempChars em ',', tirando o  texto inicial
-      // strtokIndx = strtok(tempChars, ",");  
-      // strcpy(message, strtokIndx);
+      // Corta tempChars em ',', tirando o  texto inicial
+      strtokIndx = strtok(tempChars, ",");  
+      strcpy(message, strtokIndx);
       
-      // /* NOTA: o próximo strtok com arg1 = NULL continua de onde a ultima 
-      //   chamada ao strtok() parou */
+      /* NOTA: o próximo strtok com arg1 = NULL continua de onde a ultima 
+        chamada ao strtok() parou */
       
-      // // Filtra rpmL
-      // strtokIndx = strtok(NULL, ",");       
-      // *rpmL = atoi(strtokIndx);
+      // Filtra v_x
+      strtokIndx = strtok(NULL, ",");       
+      *v_x = atof(strtokIndx);
 
-      // // Filtra rpmR
-      // strtokIndx = strtok(NULL, ",");       
-      // *rpmR = atoi(strtokIndx);
-
-      // // Filtra laserAngle
-      // strtokIndx = strtok(NULL, ",");       
-      // *laserAngle = atoi(strtokIndx);
-
-      // // Filtra laserRange
-      // strtokIndx = strtok(NULL, ",");       
-      // *laserRange = atof(strtokIndx);
+      // Filtra w_z
+      strtokIndx = strtok(NULL, ",");       
+      *w_z = atof(strtokIndx);
     }
 
     /* Processa novos dados */
-    void ProcessNewData(int* rpmL, int* rpmR, int* laserAngle, double* laserRange)
+    void ProcessNewData(double* v_x, double* w_z)
     {
       if (newData == true) {
         strcpy(tempChars, receivedChars);
-        ParseData(rpmL, rpmR, laserAngle, laserRange);
+        ParseData(v_x, w_z);
         newData = false;
       }
     }
 
-    /* Manda mensagem de controle da velocidade do carro */
-    void SendSpeedControl(double v_x, double w_z)
+    /* Manda mensagem de informações */
+    void SendInfo(
+      double x, double y, double theta, 
+      double v_x, double w_z,
+      double orientation_x, double orientation_y, double orientation_z, double orientation_w,
+      double rpm_L, double rpm_R,
+      int laserAngle, double laserRange)
     {
       char buff[SERIALCOMBUFFER] = {0};
-      snprintf(buff, SERIALCOMBUFFER, "<SpeedControl, %f, %f>\n", v_x, w_z);
+      snprintf(
+        buff, SERIALCOMBUFFER, 
+        "<Info, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s>\n", 
+        String(x).c_str(), String(y).c_str(), String(theta).c_str(), 
+        String(v_x).c_str(), String(w_z).c_str(),
+        String(orientation_x).c_str(), String(orientation_y).c_str(), String(orientation_z).c_str(), String(orientation_w).c_str(),
+        String(rpm_L).c_str(), String(rpm_R).c_str(),
+        String(laserAngle).c_str(), String(laserRange).c_str());
+
       Serial.write(buff, SERIALCOMBUFFER);
     }
 
