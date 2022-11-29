@@ -62,10 +62,10 @@ int main(int argc, char **argv)
             position.setZ(msg_odom.pose.pose.position.z);
 
             // Atualiza orientação
-            orientation.setX(msg_odom.pose.pose.orientation.x);
-            orientation.setY(msg_odom.pose.pose.orientation.y);
-            orientation.setZ(msg_odom.pose.pose.orientation.z);
-            orientation.setW(msg_odom.pose.pose.orientation.w);
+            //orientation.setX(msg_odom.pose.pose.orientation.x);
+            //orientation.setY(msg_odom.pose.pose.orientation.y);
+            //orientation.setZ(msg_odom.pose.pose.orientation.z);
+            //orientation.setW(msg_odom.pose.pose.orientation.w);
         }
 
         // Tf

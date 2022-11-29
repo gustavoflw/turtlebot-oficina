@@ -15,7 +15,7 @@ class LidarController
   int angle_status = RISING;
   int angle_increment = 1;
   int angle_min = 0;
-  int angle_max = 180;
+  int angle_max = 160;
 
   // Distância
   double range_now = 0.0;
@@ -108,24 +108,22 @@ class LidarController
 
     void Update()
     {
-      unsigned long t_now = millis();
-      unsigned long dt = t_now - t;
-      if (dt < dt_update)
-        return;
-
+      UpdateAngleTarget();
+      servo.write(angle_target);
+      UpdateRange();
       // Atualiza ângulo atual
-      angle_now = servo.read();
+      //angle_now = servo.read();
 
-      // Ângulo atual já está no desejado -> determina a próxima posição
+     /* // Ângulo atual já está no desejado -> determina a próxima posição
       if (IsAngleCorrect() == true) {
-        UpdateAngleTarget();
+        
         UpdateRange();
       }
       
       // Ângulo atual NÃO está no desejado -> vai até lá
       else {
-        // servo.write(angle_target);
-      }
+        
+      }*/
     }
 };
 

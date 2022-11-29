@@ -1,6 +1,7 @@
 #ifndef ODOMETRY_HPP
 #define ODOMETRY_HPP
 
+#include <ros.h>
 #include <geometry_msgs/Quaternion.h>
 
 /* Classe para cinemática */

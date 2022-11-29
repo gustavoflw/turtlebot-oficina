@@ -1,5 +1,4 @@
-#ifndef SERIALCOM_HPP
-#define SERIALCOM_HPP
+#include <SoftwareSerial.h>
 
 #define SERIALCOMBUFFER 64
 
@@ -13,13 +12,13 @@ class SerialCom {
 public:
 
   /* Recebe mensagem com string no formato "<Mensagem>" */
-  void ReceiveMsgWithMarkers() {
+  void ReceiveMsgWithMarkers(SoftwareSerial* mySerial) {
     static boolean recvInProgress = false;
     static byte ndx = 0;
     char rc;
 
-    while (Serial2.available() > 0 && newData == false) {
-      rc = Serial2.read();
+    while (mySerial->available() > 0 && newData == false) {
+      rc = mySerial->read();
 
       if (recvInProgress == true) {
         if (rc != '>') {
@@ -30,8 +29,8 @@ public:
           }
         } else {
           receivedChars[ndx] = '\0';  // terminate the string
-          // Serial.print("RECEIVED: ");
-          // Serial.println(receivedChars);
+          Serial.print("\nRECEIVED: ");
+          Serial.println(receivedChars);
           recvInProgress = false;
           ndx = 0;
           newData = true;
@@ -56,19 +55,13 @@ public:
     /* NOTA: o próximo strtok com arg1 = NULL continua de onde a ultima 
         chamada ao strtok() parou */
 
-    if (String(strtokIndx) == "SpeedControl") {
-      // Filtra v_x
-      strtokIndx = strtok(NULL, ",");
-      *v_x = atof(strtokIndx);
+    // Filtra v_x
+    strtokIndx = strtok(NULL, ",");
+    *v_x = atof(strtokIndx);
 
-      // Filtra w_z
-      strtokIndx = strtok(NULL, ",");
-      *w_z = atof(strtokIndx);
-    }
-    else {
-      *v_x = 0;
-      *w_z = 0;
-    }
+    // Filtra w_z
+    strtokIndx = strtok(NULL, ",");
+    *w_z = atof(strtokIndx);
   }
 
   /* Processa novos dados */
@@ -82,6 +75,7 @@ public:
 
   /* Manda mensagem de informações */
   void SendInfo(
+    SoftwareSerial* mySerial,
     double x, double y, double theta,
     double v_x, double w_z,
     double orientation_x, double orientation_y, double orientation_z, double orientation_w,
@@ -144,36 +138,55 @@ public:
     // Serial.write(buff, SERIALCOMBUFFER);
     // Serial.println();
 
-    // snprintf(buff, SERIALCOMBUFFER, "<laser,%s,%s>", String(laserAngle).c_str(), String(laserRange).c_str());
-    // clear = false;
-    // for (int i = 0; i < SERIALCOMBUFFER; i++) {
-    //   if (buff[i] == '>')
-    //     clear = true;
-    //   else if (clear == true)
-    //     buff[i] = '>';
-    // }
-    // Serial2.write(buff, SERIALCOMBUFFER);
-    // // Serial.print("SENDING: ");
-    // // Serial.write(buff, SERIALCOMBUFFER);
-    // // Serial.println();
+    snprintf(buff, SERIALCOMBUFFER, "<laser,%s,%s>", String(laserAngle).c_str(), String(laserRange).c_str());
+    clear = false;
+    for (int i = 0; i < SERIALCOMBUFFER; i++) {
+      if (buff[i] == '>')
+        clear = true;
+      else if (clear == true)
+        buff[i] = '>';
+    }
+    mySerial->write(buff, SERIALCOMBUFFER);
+    Serial.print("\nSENDING: ");
+    Serial.write(buff, SERIALCOMBUFFER);
+    Serial.println();
+  }
 
-    // <####@@@@>
-
-    unsigned char bytes[4];
-    float laserAnglef = (float)laserAngle;
-    float vet[4];
-
-    Serial2.write('<');
-
-    // memcpy(&laserAnglef, bytes, 4);
-    Serial2.write((char*)vet, 4*sizeof(float));//////////////////
-
-    // memcpy(&laserRange, bytes, 4);
-    // Serial2.write(bytes, 4);
-
-    Serial2.write('>');
-    Serial2.write('\n');
+  /* Printa os dados */
+  void ShowParsedData(char* messageFromUno, int distance) {
+    Serial.print("Message: ");
+    Serial.println(message);
   }
 };
 
-#endif
+#define pin_RX 7
+#define pin_TX 6
+SerialCom serialCom;
+SoftwareSerial mySerial(pin_RX, pin_TX);
+
+void setup() {
+  Serial.begin(57600);
+  mySerial.begin(57600);
+}
+
+unsigned long t_sendSerial = 0, dt_sendSerial = 100;
+
+void loop() {
+  // delay(30);
+
+  double v_x = 0, w_z = 0;
+  serialCom.ReceiveMsgWithMarkers(&mySerial);
+  serialCom.ProcessNewData(&v_x, &w_z);
+
+  if (millis() - t_sendSerial > dt_sendSerial) {
+    t_sendSerial = millis();
+    serialCom.SendInfo(&mySerial, 
+    1.0, 2.0, 3.0,
+    4.0, 5.0,
+    6.0, 7.0, 8.0, 9.0,
+    10.0, 11.0,
+    12, 13.0);
+  } 
+
+  mySerial.flush();
+}

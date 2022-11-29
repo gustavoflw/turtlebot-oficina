@@ -4,7 +4,7 @@
 
     <include file="$(find turtlebot_oficina)/launch/serial.launch" />
 
-    <include file="$(find turtlebot_oficina)/launch/teleop.launch" />
+    <!-- <include file="$(find turtlebot_oficina)/launch/teleop.launch" /> -->
 
     <node type="odom_converter" name="odom_converter" pkg="turtlebot_oficina" />
     
@@ -16,6 +16,3 @@
     />
     
 </launch>
-
-
-

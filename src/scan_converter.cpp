@@ -1,6 +1,6 @@
 #include <ros/ros.h>
 #include <tf/transform_broadcaster.h>
-#include <std_msgs/Int64.h>
+#include <std_msgs/Int32.h>
 #include <std_msgs/Float64.h>
 #include <sensor_msgs/LaserScan.h>
 
@@ -8,11 +8,11 @@
 
 bool newAngle = false, newRange = false;
 
-std_msgs::Int64 msg_scanAngle;
+std_msgs::Int32 msg_scanAngle;
 std_msgs::Float64 msg_scanRange;
 sensor_msgs::LaserScan msg_scan;
 
-void Callback_scanAngle(const std_msgs::Int64::ConstPtr& msg)
+void Callback_scanAngle(const std_msgs::Int32::ConstPtr& msg)
 {
     msg_scanAngle = *msg;
     newAngle = true;
@@ -40,15 +40,13 @@ int main(int argc, char **argv)
 
     ros::Rate loopRate(30);
 
-    // double scan_angle_deg
-
     msg_scan.header.frame_id = "scan_link";
     msg_scan.angle_min = 0;
-    msg_scan.angle_max = 2 * PI;
-    msg_scan.angle_increment = msg_scan.angle_max / 360;
+    msg_scan.angle_max = PI;
+    msg_scan.angle_increment = PI / 180;
     msg_scan.range_max = 5;
     msg_scan.range_min = 0;
-    msg_scan.ranges.resize(360);
+    msg_scan.ranges.resize(180);
 
     ROS_INFO("Looping...");
 
@@ -90,7 +88,7 @@ int main(int argc, char **argv)
         tfBroadcaster.sendTransform(tf::StampedTransform(tf, ros::Time::now(), "base_link", "scan_link"));
 
         // Scan conversion
-        // ROS_INFO("Publishing scan...");
+        ROS_INFO("Publishing scan...");
         pub_scan.publish(msg_scan);
         
     }

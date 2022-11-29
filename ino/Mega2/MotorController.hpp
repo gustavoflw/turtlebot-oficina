@@ -24,11 +24,12 @@ class MotorController {
   // Variáveis de tempo (milissegundos)
   unsigned long t_last = 0;
   unsigned long t_update_interval = 100;
-
-  // Objeto do motor
-  AF_DCMotor motor;
+  
   
   public:
+    // Objeto do motor
+    AF_DCMotor motor;
+
     int status = FORWARD;
     // Inicialização
     MotorController(int pin) : motor(pin) 
@@ -66,9 +67,10 @@ class MotorController {
         fspeed_correction = output_p + output_d + output_i;
         speed_now = speed_now + fspeed_correction;
 
+
+        // speed_now = 255;
         speed_now = min(speed_now, 255);
-        speed_now = max(speed_now, 150);
-        // speed_now = max(speed_now, 0);
+        speed_now = max(speed_now, 200);
       }
     
       // Log();

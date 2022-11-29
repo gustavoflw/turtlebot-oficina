@@ -4,7 +4,7 @@
 
 #include "LidarController.h"
 
-#define PIN_SERVO 10
+#define PIN_SERVO 35
 
 LidarController lidar;
 
