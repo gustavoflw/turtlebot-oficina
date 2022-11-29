@@ -10,7 +10,7 @@
 - ~~Movimento omni direcional~~
 - ~~Montar segundo andar~~
 - ~~Aplicativo~~
-- ~~Arrumar teleop (delay) ~~
+- ~~Arrumar teleop (delay)~~
 - ~~Rede~~
 - ~~Conversor de odometria~~
 - ~~Alimentação~~
