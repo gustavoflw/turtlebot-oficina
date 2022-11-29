@@ -1,0 +1,23 @@
+# Parâmetros locais para o Costmap
+local_costmap:
+  # Frames
+  global_frame: map
+  robot_base_frame: base_link
+
+  # Frequências de atualização e publicação do Costmap
+  update_frequency: 30.0
+  publish_frequency: 30.0
+
+  # Mantém o robô no centro do Costmap
+  rolling_window: true
+
+  # Tamanho do Costmap
+  width: 2.5
+  height: 2.5
+
+  # Resolução do Costmap
+  resolution: 0.1
+
+  # Coordenadas de origem do Costmap
+  origin_x: 0
+  origin_y: 0

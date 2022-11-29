@@ -3,6 +3,7 @@
 #include <std_msgs/Int32.h>
 #include <std_msgs/Float64.h>
 #include <sensor_msgs/LaserScan.h>
+#include <nav_msgs/Odometry.h>
 
 # define PI 3.14159265358979323846
 
@@ -16,15 +17,20 @@ void Callback_scanAngle(const std_msgs::Int32::ConstPtr& msg)
 {
     msg_scanAngle = *msg;
     newAngle = true;
-    ROS_INFO("New angle!");
+    ROS_INFO("New angle! %d", msg_scanAngle.data);
 }
 
 void Callback_scanRange(const std_msgs::Float64::ConstPtr& msg)
 {
     msg_scanRange = *msg;
     newRange = true;
-    ROS_INFO("New range!");
+    ROS_INFO("New range! %f", msg_scanRange.data);
 }
+
+// void Callback_odom(const nav_msgs::Odometry::ConstPtr& msg)
+// {
+
+// }
 
 int main(int argc, char **argv)
 {
@@ -61,30 +67,19 @@ int main(int argc, char **argv)
             newAngle = false;
             newRange = false;
 
-            for (int i=0; i < msg_scan.ranges.size(); i++)
-                msg_scan.ranges[i] = 0.0;
+            // Limpa o array
+            // for (int i=0; i < msg_scan.ranges.size(); i++)
+                // msg_scan.ranges[i] = 20.0;
             
             // Atualiza ranges
-            ROS_INFO("Updating ranges...");
+            ROS_INFO("Updating range %f for angle %d", msg_scanRange.data, msg_scanAngle.data);
             msg_scan.ranges[msg_scanAngle.data-1] = msg_scanRange.data;
         }
 
-        // Tests
-        // if (tmp == 0) {
-        //     tmp = 1;
-        //     for (int i=0; i < msg_scan.ranges.size(); i++)
-        //         msg_scan.ranges[i] = 1.0;
-        // }
-        // else {
-        //     tmp = 0;
-        //     for (int i=0; i < msg_scan.ranges.size(); i++)
-        //         msg_scan.ranges[i] = 0.0;
-        // }
-
         // Tf
         ROS_INFO("Updating scan tf...");
-        tf.setOrigin( tf::Vector3(0, 0, 0.1) );
-        tf.setRotation( tf::Quaternion(0, 0, 0) );
+        tf.setOrigin( tf::Vector3(0.0, 0.0, 0.1) );
+        tf.setRotation( tf::Quaternion(0.0, 0.0, 0.0, 1.0) );
         tfBroadcaster.sendTransform(tf::StampedTransform(tf, ros::Time::now(), "base_link", "scan_link"));
 
         // Scan conversion

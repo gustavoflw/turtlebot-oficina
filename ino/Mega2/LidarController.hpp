@@ -20,10 +20,6 @@ class LidarController
   // Distância
   double range_now = 0.0;
 
-  // Tempo
-  unsigned long t = millis();
-  unsigned long dt_update = 10;
-
   // Servo
   Servo servo;
 
@@ -55,22 +51,13 @@ class LidarController
     /* Retorna o ângulo atual (última vez medido) */
     int GetAngle()
     {
-      return angle_now;
+      return servo.read();
     }
 
     /* Retorna a distância atual (última vez medida) */
     double GetRange()
     {
       return range_now;
-    }
-
-    /* Retorna true se angle_now == angle_target */
-    bool IsAngleCorrect()
-    {
-      if (angle_now == angle_target)
-        return true;
-      else
-        return false;
     }
 
     /* Atualiza qual é o próximo ângulo */
@@ -113,17 +100,6 @@ class LidarController
       UpdateRange();
       // Atualiza ângulo atual
       //angle_now = servo.read();
-
-     /* // Ângulo atual já está no desejado -> determina a próxima posição
-      if (IsAngleCorrect() == true) {
-        
-        UpdateRange();
-      }
-      
-      // Ângulo atual NÃO está no desejado -> vai até lá
-      else {
-        
-      }*/
     }
 };
 

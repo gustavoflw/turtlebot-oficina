@@ -1,0 +1,27 @@
+# Distância máxima em que o obstáculo será inserido no costmap [m]
+obstacle_range: 5.0
+
+# Distância máxima de observação dos sensores [m]
+raytrace_range: 5.0
+
+# Formato 2D do robô (vista superior) (22x15 cm)
+footprint: [[0.11, 0.075], [0.11, -0.075], [-0.11, -0.075], [-0.11, 0.075]]
+
+# Raio para determinação dos custos de navegação no mapa [m]
+inflation_radius: 0.01
+
+# Tolerância de atraso para as transformações
+transform_tolerance: 0.3
+
+# Sensores de percepção
+observation_sources: laser_scan_sensor
+
+# Percepção por LIDAR
+laser_scan_sensor:
+  {
+    sensor_frame: scan_link,
+    data_type: LaserScan,
+    topic: /scan,
+    marking: true,
+    clearing: true,
+  }

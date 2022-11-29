@@ -60,7 +60,7 @@ void setup()
 {
   // Serial
   Serial.begin(serialRate);
-  Serial2.begin(serialRate);
+  Serial3.begin(serialRate);
   Serial.println("Hello");
 
   // Setup do lidar
@@ -83,15 +83,18 @@ void setup()
 /***** LOOP *****/
 void loop()
 {
-  // delay(1);  
-
-  UpdateSerial();
+  serialCom.ReceiveMsg(&cmd_v_x, &cmd_w_z); 
 
   if (IsAllowedToLoop(t_last, t_delay)) {
-    Serial.println(millis()-t_last);
     UpdateTimeVariables();
     UpdateMotors();
-    UpdateLidar();
+    serialCom.SendInfo(
+      odom_x, odom_y, odom_theta, 
+      odom_v_x, odom_w_z,
+      odom_orientation_x, odom_orientation_y, odom_orientation_z, odom_orientation_w,
+      rpmL, rpmR,
+      scan_angle, scan_range);
+    // UpdateLidar();
     UpdateOdom();
   }
 }
@@ -110,6 +113,7 @@ bool IsAllowedToLoop(unsigned long millis_lastLoop, unsigned long dt_min)
 // Atualiza variáveis de tempo
 void UpdateTimeVariables()
 {
+  // Serial.println(millis()-t_last);
   t_last  = millis();
 }
 
@@ -120,30 +124,14 @@ void UpdateTargetRPM()
   motor_R.SetTargetRPM(kinematics.Inverse_R(cmd_v_x, cmd_w_z, wheelRadius, wheelsAxisLength));
 }
 
-// Atualiza serial
-void UpdateSerial()
-{
-  // Serial.println("\nUpdating serial");
-
-  serialCom.ReceiveMsgWithMarkers();
-  serialCom.ProcessNewData(&cmd_v_x, &cmd_w_z);
-  
-
-  serialCom.SendInfo(
-      odom_x, odom_y, odom_theta, 
-      odom_v_x, odom_w_z,
-      odom_orientation_x, odom_orientation_y, odom_orientation_z, odom_orientation_w,
-      rpmL, rpmR,
-      scan_angle, scan_range);
-}
-
 // Atualiza lidar
 void UpdateLidar()
 {
   lidar.Update();
   scan_angle = lidar.GetAngle();
   scan_range = lidar.GetRange();
-  // Serial.println(scan_range);
+  Serial.println(scan_range);
+  Serial.println(scan_angle);
 }
 
 // Se o encoder tem uma nova leitura, atualiza a velocidade do motor

@@ -4,15 +4,19 @@
 
     <include file="$(find turtlebot_oficina)/launch/serial.launch" />
 
-    <!-- <include file="$(find turtlebot_oficina)/launch/teleop.launch" /> -->
+    <include file="$(find turtlebot_oficina)/launch/teleop.launch" />
 
-    <node type="odom_converter" name="odom_converter" pkg="turtlebot_oficina" />
+    <include file="$(find turtlebot_oficina)/launch/move_base.launch" />
+
+    <node type="odom_converter" name="odom_converter" pkg="turtlebot_oficina"  />
+
+    <node type="scan_converter" name="scan_converter" pkg="turtlebot_oficina" />
     
     <node 
         type="rviz"
         name="rviz" 
         pkg="rviz" 
-        args="-d $(find turtlebot_oficina)/rviz.rviz" 
+        args="-d $(find turtlebot_oficina)/rviz2.rviz" 
     />
     
 </launch>
