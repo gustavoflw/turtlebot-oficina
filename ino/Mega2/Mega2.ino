@@ -18,7 +18,7 @@
 #define serialRate          115200
 #define wheelRadius         3.3
 #define wheelsAxisLength    15.6 
-#define kp                  0.3
+#define kp                  3.3
 #define ki                  0.0
 #define kd                  0.0
 
@@ -83,11 +83,13 @@ void setup()
 /***** LOOP *****/
 void loop()
 {
-  serialCom.ReceiveMsg(&cmd_v_x, &cmd_w_z); 
+
+  serialCom.ReceiveMsg(&cmd_v_x, &cmd_w_z);
 
   if (IsAllowedToLoop(t_last, t_delay)) {
     UpdateTimeVariables();
     UpdateMotors();
+     
     serialCom.SendInfo(
       odom_x, odom_y, odom_theta, 
       odom_v_x, odom_w_z,
@@ -130,8 +132,8 @@ void UpdateLidar()
   lidar.Update();
   scan_angle = lidar.GetAngle();
   scan_range = lidar.GetRange();
-  Serial.println(scan_range);
-  Serial.println(scan_angle);
+  // Serial.println(scan_range);
+  // Serial.println(scan_angle);
 }
 
 // Se o encoder tem uma nova leitura, atualiza a velocidade do motor

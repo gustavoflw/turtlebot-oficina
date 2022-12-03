@@ -21,10 +21,10 @@ public:
         // for (int i = 0; i < RECEIVEDLEN; i++)
         //   Serial.println((char)buffer[i]);
         if (buffer[RECEIVEDLEN - 1] == '>') {
-          Serial.println("Ok msg!");
+          // Serial.println("Ok msg!");
           int i = 0;
           int j = 1;
-          Serial.print("Received info: ");
+          // Serial.print("Received info: ");
           while (i != RECEIVEDFLOATS) {
             memcpy(&data[i], &buffer[j], sizeof(float));
             Serial.print(data[i]);
@@ -55,7 +55,7 @@ public:
       laserAngle, laserRange
     };
 
-    Serial.println("Sending info");
+    // Serial.println("Sending info");
     Serial3.print('<');
     Serial3.write((char*)data, 13 * sizeof(float));
     Serial3.print('>');

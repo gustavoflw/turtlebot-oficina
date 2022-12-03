@@ -98,8 +98,6 @@ class LidarController
       UpdateAngleTarget();
       servo.write(angle_target);
       UpdateRange();
-      // Atualiza ângulo atual
-      //angle_now = servo.read();
     }
 };
 

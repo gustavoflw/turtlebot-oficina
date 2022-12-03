@@ -20,25 +20,25 @@
 
 /* WIFI */
 // --- laser ---
-// const char *wifi_ssid      = "UtBot - rede linda";
-// const char *wifi_password  = "utbotlaser";
-// int        rosmaster_port  = 11411;
-// uint8_t    newMACAddress[] = {0x5C, 0xE8, 0x83, 0x36, 0x9A, 0xC3};
-// IPAddress  gateway  (192, 168, 1, 1);
-// IPAddress  rosmaster(gateway[0], gateway[1], gateway[2], 210        );
-// IPAddress  localIP  (gateway[0], gateway[1], gateway[2], 10        );
-// IPAddress  dns      (gateway[0], gateway[1], gateway[2], gateway[3]);
-// IPAddress  subnet   (       255,        255,        255,        0  );
+const char *wifi_ssid      = "UtBot - rede linda";
+const char *wifi_password  = "utbotlaser";
+int        rosmaster_port  = 11411;
+uint8_t    newMACAddress[] = {0x5C, 0xE8, 0x83, 0x36, 0x9A, 0xC3};
+IPAddress  gateway  (192, 168, 1, 1);
+IPAddress  rosmaster(gateway[0], gateway[1], gateway[2], 210        );
+IPAddress  localIP  (gateway[0], gateway[1], gateway[2], 10        );
+IPAddress  dns      (gateway[0], gateway[1], gateway[2], gateway[3]);
+IPAddress  subnet   (       255,        255,        255,        0  );
 // --- casa ---
-const char* wifi_ssid = "ALHN-0255";
-const char* wifi_password = "##53NH4##";
-int rosmaster_port = 11411;
-uint8_t newMACAddress[] = { 0x5C, 0xE8, 0x83, 0x36, 0x9A, 0xC3 };
-IPAddress gateway(192, 168, 1, 254);
-IPAddress rosmaster(gateway[0], gateway[1], gateway[2], 126);
-IPAddress localIP(gateway[0], gateway[1], gateway[2], 155);
-IPAddress dns(gateway[0], gateway[1], gateway[2], gateway[3]);
-IPAddress subnet(255, 255, 255, 0);
+// const char* wifi_ssid = "ALHN-0255";
+// const char* wifi_password = "##53NH4##";
+// int rosmaster_port = 11411;
+// uint8_t newMACAddress[] = { 0x5C, 0xE8, 0x83, 0x36, 0x9A, 0xC3 };
+// IPAddress gateway(192, 168, 1, 254);
+// IPAddress rosmaster(gateway[0], gateway[1], gateway[2], 126);
+// IPAddress localIP(gateway[0], gateway[1], gateway[2], 155);
+// IPAddress dns(gateway[0], gateway[1], gateway[2], gateway[3]);
+// IPAddress subnet(255, 255, 255, 0);
 
 /* TEMPO */
 unsigned long t_now = millis();
@@ -97,17 +97,16 @@ void loop() {
 
   // UpdateSerial();
 
-  serialCom.ReceiveMsg(&msg_odom_twist, &msg_odom_pose,
-                                  &msg_rpmL, &msg_rpmR,
-                                  &msg_odom_theta,
-                                  &msg_laser_angle, &msg_laser_range);
-
   if (IsAllowedToLoop(t_last, t_delay)) {
     // Serial.println("\nLooping...");
     nh.spinOnce();  // "F5"
     UpdateTimeVariables();
     UpdateROS();
     serialCom.SendSpeedControl(msg_cmd_vel.linear.x, msg_cmd_vel.angular.z);
+    serialCom.ReceiveMsg(&msg_odom_twist, &msg_odom_pose,
+                                  &msg_rpmL, &msg_rpmR,
+                                  &msg_odom_theta,
+                                  &msg_laser_angle, &msg_laser_range);
   }
 }
 

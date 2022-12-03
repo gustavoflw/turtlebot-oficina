@@ -70,7 +70,8 @@ class MotorController {
 
         // speed_now = 255;
         speed_now = min(speed_now, 255);
-        speed_now = max(speed_now, 200);
+        speed_now = max(speed_now, 170);
+        Serial.println(speed_now);
       }
     
       // Log();
