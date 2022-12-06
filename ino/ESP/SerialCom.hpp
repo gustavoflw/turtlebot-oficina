@@ -29,18 +29,18 @@ public:
         // for (int i = 0; i < RECEIVEDLEN; i++)
         //   Serial.println((char)buffer[i]);
         if (buffer[RECEIVEDLEN - 1] == '>') {
-          Serial.println("Ok msg!");
+          // Serial.println("Ok msg!");
           int i = 0;
           int j = 1;
-          Serial.print("Received info: ");
+          // Serial.print("Received info: ");
           while (i != RECEIVEDFLOATS) {
             memcpy(&data[i], &buffer[j], sizeof(float));
-            Serial.print(data[i]);
-            Serial.print(",");
+            // Serial.print(data[i]);
+            // Serial.print(",");
             i = i + 1;
             j = j + 4;
           }
-          Serial.println();
+          // Serial.println();
           msg_odom_pose->position.x = data[0];
           msg_odom_pose->position.y = data[1];
           msg_odom_theta->data = data[2];
@@ -60,10 +60,12 @@ public:
   }
 
   void SendSpeedControl(double v_x, double w_z) {
-    float data[2] = { v_x, w_z };
+    float data[2] = { (float)v_x, (float)w_z };
     Serial.print('<');
     Serial.write((char*)data, 2 * sizeof(float));
     Serial.print('>');
+    Serial.print('\n');
+    // Serial.flush();
   }
 };
 

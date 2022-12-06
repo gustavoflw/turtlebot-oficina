@@ -25,11 +25,6 @@ class Odometry {
 
       // Calcula o quanto girou
       theta = w_z * d_t + theta;
-      // double d_theta = w_z * d_t + d_theta;
-      
-      // Calcula o quanto andou:
-      // double d_x = v_x * cos(d_theta) * d_t;
-      // double d_y = v_x * sin(d_theta) * d_t;
 
       double d_x = v_x * cos(theta);
       double d_y = v_x * sin(theta);
@@ -37,7 +32,6 @@ class Odometry {
       // Calcula os novos valores (soma do antigo mais a nova variação)
       x      += d_x;
       y      += d_y;
-      // theta  += d_theta;
     }
 
     // Converte 3 angulos de rotação para quatérnio (fonte: Wikipedia)

@@ -1,0 +1,4 @@
+map_frame: map
+robot_width: 0.05
+robot_front_length: 0.1
+robot_back_length: 0.1

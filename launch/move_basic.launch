@@ -1,0 +1,9 @@
+<launch>
+
+    <node pkg="move_basic" type="move_basic" respawn="false" name="move_basic" output="screen">
+        <rosparam file="$(find turtlebot_oficina)/cfg/move_basic.yaml" command="load" />
+    </node>
+
+
+
+</launch>

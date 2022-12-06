@@ -3,9 +3,10 @@
 #include <std_msgs/Int32.h>
 #include <std_msgs/Float64.h>
 #include <sensor_msgs/LaserScan.h>
-#include <nav_msgs/Odometry.h>
 
-# define PI 3.14159265358979323846
+#define PI 3.14159265358979323846
+#define ANGLE_RISING 1
+#define ANGLE_FALLING 2
 
 bool newAngle = false, newRange = false;
 
@@ -27,10 +28,20 @@ void Callback_scanRange(const std_msgs::Float64::ConstPtr& msg)
     ROS_INFO("New range! %f", msg_scanRange.data);
 }
 
-// void Callback_odom(const nav_msgs::Odometry::ConstPtr& msg)
-// {
+void publishAll(tf::TransformBroadcaster* tfBroadcaster, tf::Transform* tf, ros::Publisher* pub_scan)
+{
+    // Tf
+    // ROS_INFO("Publishing scan tf...");
+    tf->setOrigin( tf::Vector3(0.0, 0.0, 0.1) );
+    tf->setRotation( tf::Quaternion(0.0, 0.0, 0.7068252, -0.7073883) );
+    tfBroadcaster->sendTransform(tf::StampedTransform(*tf, ros::Time::now(), "base_link", "scan_link"));
 
-// }
+    // Scan conversion
+    // ROS_INFO("Publishing scan...");
+    
+    msg_scan.header.stamp = ros::Time::now();
+    pub_scan->publish(msg_scan);
+}
 
 int main(int argc, char **argv)
 {
@@ -47,45 +58,44 @@ int main(int argc, char **argv)
     ros::Rate loopRate(30);
 
     msg_scan.header.frame_id = "scan_link";
+    msg_scan.scan_time = 2;
     msg_scan.angle_min = 0;
     msg_scan.angle_max = PI;
     msg_scan.angle_increment = PI / 180;
     msg_scan.range_max = 5;
     msg_scan.range_min = 0;
+    msg_scan.ranges.clear();
     msg_scan.ranges.resize(180);
 
     ROS_INFO("Looping...");
-
-    int tmp = 0;
 
     while (ros::ok())
     {
         loopRate.sleep();
         ros::spinOnce();
 
+        int index = 0;
+
         if (newAngle == true || newRange == true) {
             newAngle = false;
             newRange = false;
 
             // Limpa o array
-            // for (int i=0; i < msg_scan.ranges.size(); i++)
-                // msg_scan.ranges[i] = 20.0;
-            
-            // Atualiza ranges
+            for (int i=0; i < msg_scan.ranges.size(); i++)
+                msg_scan.ranges[i] = 0.0;
+
+            // Atualiza range
             ROS_INFO("Updating range %f for angle %d", msg_scanRange.data, msg_scanAngle.data);
-            msg_scan.ranges[msg_scanAngle.data-1] = msg_scanRange.data;
+            if (msg_scanAngle.data == 0)
+                index = 0;
+            else
+                index = msg_scanAngle.data - 1;
+            msg_scan.ranges[index] = msg_scanRange.data;
+
+
+            // Publica
+            publishAll(&tfBroadcaster, &tf, &pub_scan);
         }
-
-        // Tf
-        ROS_INFO("Updating scan tf...");
-        tf.setOrigin( tf::Vector3(0.0, 0.0, 0.1) );
-        tf.setRotation( tf::Quaternion(0.0, 0.0, 0.0, 1.0) );
-        tfBroadcaster.sendTransform(tf::StampedTransform(tf, ros::Time::now(), "base_link", "scan_link"));
-
-        // Scan conversion
-        ROS_INFO("Publishing scan...");
-        pub_scan.publish(msg_scan);
-        
     }
 
     return 0;

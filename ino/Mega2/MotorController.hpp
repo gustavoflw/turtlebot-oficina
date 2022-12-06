@@ -68,9 +68,11 @@ class MotorController {
         speed_now = speed_now + fspeed_correction;
 
 
-        // speed_now = 255;
+        int minSpeed = 120;
+        if (rpm_now < 30.0)
+          minSpeed = 255;
         speed_now = min(speed_now, 255);
-        speed_now = max(speed_now, 170);
+        speed_now = max(speed_now, minSpeed);
         Serial.println(speed_now);
       }
     

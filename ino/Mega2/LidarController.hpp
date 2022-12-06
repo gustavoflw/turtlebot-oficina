@@ -38,7 +38,10 @@ class LidarController
       servo.write(0);
 
       if (!lox.begin())
-        delay(5);
+      {
+        Serial.println("Laser sensor not initialized");
+        delay(500);
+      }
 
     }
 

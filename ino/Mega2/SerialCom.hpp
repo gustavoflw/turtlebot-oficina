@@ -27,15 +27,17 @@ public:
           // Serial.print("Received info: ");
           while (i != RECEIVEDFLOATS) {
             memcpy(&data[i], &buffer[j], sizeof(float));
-            Serial.print(data[i]);
-            Serial.print(",");
+            // Serial.print(data[i]);
+            // Serial.print(",");
             i = i + 1;
             j = j + 4;
           }
-          Serial.println();
+          // Serial.println();
           *cmd_v_x = data[0];
           *cmd_w_z = data[1];
         }
+        // Serial3.flush();
+        // Serial.flush();
       }
     }
   }
@@ -48,17 +50,23 @@ public:
     int laserAngle, double laserRange) {
 
     float data[13] = {
-      x, y, theta,
-      v_x, w_z,
-      orientation_x, orientation_y, orientation_z, orientation_w,
-      rpm_L, rpm_R,
-      laserAngle, laserRange
+      (float)x, (float)y, (float)theta,
+      (float)v_x, (float)w_z,
+      (float)orientation_x, (float)orientation_y, (float)orientation_z, (float)orientation_w,
+      (float)rpm_L, (float)rpm_R,
+      (float)laserAngle, (float)laserRange
     };
 
-    // Serial.println("Sending info");
+    Serial.print("Sending info:");
+    Serial.print('<');
+    Serial.write((char*)data, 13 * sizeof(float));
+    Serial.println('>');
+    Serial.flush();
+
     Serial3.print('<');
     Serial3.write((char*)data, 13 * sizeof(float));
     Serial3.print('>');
+    // Serial3.flush();
   }
 };
 
